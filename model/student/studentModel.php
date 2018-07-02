@@ -15,7 +15,7 @@
 
 include 'class.database.php';
 include 'class.utility.php';
-class User {
+class Student {
     
     private $con = "";
     private $inst = "";

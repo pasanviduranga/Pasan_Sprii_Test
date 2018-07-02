@@ -18,7 +18,7 @@ final class Database {
     
     public function dbConnect(){
 		
-		$xml = simplexml_load_file('../../etc/dbconfig.xml');
+		$xml = simplexml_load_file('./etc/dbconfig.xml');
 		
         $host = $xml->host;
         $user = $xml->user;

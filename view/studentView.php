@@ -7,9 +7,15 @@
         <div class="container">
 			<?php
 
-				/*include 'class/class.user.php';
+				include './model/student/subjectModel.php';
+				
+				$subject = new Subject();
+				$subList = $subject->loadSubject();
+				
+				echo "<pre/>";
+				print_r($subList->fetch_assoc());
 
-				if(isset($_POST['btnSave'])){
+				/*if(isset($_POST['btnSave'])){
 					$user = new User();
 					$user->register($_POST);
 				}*/
