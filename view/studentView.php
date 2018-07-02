@@ -11,9 +11,6 @@
 				
 				$subject = new Subject();
 				$subList = $subject->loadSubject();
-				
-				echo "<pre/>";
-				print_r($subList->fetch_assoc());
 
 				/*if(isset($_POST['btnSave'])){
 					$user = new User();
@@ -34,10 +31,9 @@
 						<p>
 							<label for="selSubject">Subjects </label>
 							<select multiple id="selSubject" name="selSubject" class="dropdown">
-							<option value="Subject 1">Subject 1</option>
-							<option value="Subject 2">Subject 2</option>
-							<option value="Subject 3">Subject 3</option>
-							<option value="Subject 4">Subject 4</option>
+								<?php while($row = $subList->fetch_assoc()){ ?>
+									<option value="<?php echo $row["id"]; ?>"><?php echo $row["subject"]; ?></option>
+								<?php } ?>
 							</select>
 						</p>    
 						<p class="button-section">
