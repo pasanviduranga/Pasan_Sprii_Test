@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<connection>
+	<host>localhost</host>
+	<user>pasan_sprii_test</user>
+	<password>pasan_sprii_test</password>
+	<dbname>pasan_sprii_test</dbname>
+</connection>
