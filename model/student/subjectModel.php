@@ -1,16 +1,7 @@
 <?php
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
-/**
- * Description of class
- *
- * @author User
+ * All Subject related functionalities
  */
 
 include_once './model/utility/db.php';
@@ -23,6 +14,11 @@ class Subject {
         $this->con = $this->inst->dbConnect();
     }
     
+	/**
+	* Load all active subject list
+	*
+	* @return result
+	*/
     public function loadSubject(){
         
         $query = "SELECT id,subject FROM subject WHERE status='ACTIVE'";
@@ -35,4 +31,21 @@ class Subject {
         }
         
     }
+	
+	/**
+	* Load subjects by student id
+	*
+	* @paran int $stdId Student id
+	* @return result
+	*/	
+	public function loadSubjectByStudentId($stdId){
+		$query = "SELECT s.subject as subject FROM student_subject ss INNER JOIN subject s ON ss.subject_id=s.id WHERE ss.student_id=$stdId AND s.status='ACTIVE'";
+        
+        $res = $this->inst->execute_query($query, $this->con);
+        if(!$res){
+            echo $this->con->error;
+        }else{
+			return $res;
+        }
+	}
 }

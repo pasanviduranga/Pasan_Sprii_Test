@@ -101,3 +101,19 @@ table.blueTable tfoot .links a{
   padding: 2px 8px;
   border-radius: 5px;
 }
+
+/*messages*/
+.success, .error {
+margin: 10px 0px;
+padding:12px;
+ 
+}
+.success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+}
+
+.error {
+    color: #D8000C;
+    background-color: #FFD2D2;
+}

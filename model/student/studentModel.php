@@ -1,67 +1,113 @@
 <?php
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * All the functions related to the student
  */
 
-
-/**
- * Description of class
- *
- * @author User
- */
-
-include 'class.database.php';
-include 'class.utility.php';
+include_once './model/utility/db.php';
 class Student {
     
     private $con = "";
     private $inst = "";
+	private $error = "";
     public function __construct() {
         $this->inst = Database::inst();
         $this->con = $this->inst->dbConnect();
     }
-    
-    public function register($post){
-        $util = Utility::Inst();
+    /**
+	* Save Student Details
+	* @param mixed[] $post Form Values
+	* @return string Return error or success
+	*/
+    public function saveDetail($post){
+		
+		$fname = $this->inst->escape_unwanted_string($post['txtFname'], $this->con);
+		$lname = $this->inst->escape_unwanted_string($post['txtLname'], $this->con);
+		if(isset($post['selSubject'])){
+			$subjects = $post['selSubject'];
+		}else{
+			$subjects = "";
+		}
+		
+		$validate = $this->validate($fname,$lname,$subjects);
+		if($validate){
         
-        $fname = $util->escape_unwanted_string($post['txtFname'], $this->con);
-        $lname = $util->escape_unwanted_string($post['txtLname'], $this->con);
-        $email = $util->escape_unwanted_string($post['txtEmail'], $this->con);
-        $tele = $util->escape_unwanted_string($post['txtPhone'], $this->con);
-        $pass = md5($util->escape_unwanted_string($post['txtPassword'], $this->con));
-        
-        $query = "INSERT INTO user(email,status,first_name,password,phone,last_name) VALUES('$email','ACTIVE','$fname','$pass','$tele','$lname')";
-        
-        $res = $this->inst->execute_query($query, $this->con);
-        if(!$res){
-            echo $this->con->error;
-        }
+			$query = "INSERT INTO student(first_name,last_name) VALUES('$fname','$lname')";
+			
+			$studet_id = $this->inst->execute_query_with_last_id($query, $this->con);
+			
+			$suject_count = count($subjects);
+			for($i=0;$i < $suject_count; $i++){
+				$suject_id = $subjects[$i];
+				$query = "INSERT INTO student_subject(student_id,subject_id) VALUES('$studet_id','$suject_id')";
+				$this->inst->execute_query($query, $this->con);
+			}
+			unset($_SESSION["fname"]);
+			unset($_SESSION["lname"]);
+			unset($_SESSION["subjects"]);
+			$this->error = "";
+			$ret = "success";
+		}else{
+			$_SESSION["fname"] = $fname;
+			$_SESSION["lname"] = $lname;
+			$_SESSION["subjects"] = $subjects;
+			$ret = $this->error;
+		}
+		
+		return $ret;
     }
     
-    public function authenticate($post){
-        
-        $util = new Utility();
-        $uname = $util->escape_unwanted_string($post['txtUser'], $this->con);
-        $pass = md5($util->escape_unwanted_string($post['txtPassword'], $this->con));
-        
-        $query = "SELECT first_name,last_name,email,password FROM user WHERE email='$uname' AND status='ACTIVE'";
+	/**
+	* Validate form values
+	*
+	* @param string $fname First Name value
+	* @param string $lname Lanst Name value
+	* @param mixed[] $subjects Array or text
+	*
+	* @return boolean
+	*/
+    private function validate($fname,$lname,$subjects){
+		
+		$ret = true;
+		
+		if(empty($fname)){
+			$this->error .= "First Name is required field<br />";
+			$ret = false;
+		}
+		
+		if (!preg_match("/^[a-zA-Z ]*$/", $fname)) {
+			$this->error .= "Only letters and white space are allowed in First Name<br />";
+			$ret = false;
+		}
+		if(empty($lname)){
+			$this->error .= "Last Name is required field<br />";
+			$ret = false;
+		}
+		
+		if (!preg_match("/^[a-zA-Z ]*$/", $lname)) {
+			$this->error .= "Only letters and white space are allowed in Last Name<br />";
+			$ret = false;
+		}
+		if(empty($subjects)){
+			$this->error .= "Subjects is required field<br />";
+			$ret = false;
+		}
+		return $ret;
+	}
+	
+	/**
+	* Load all active student list
+	*
+	* @return result $res
+	*/
+	public function loadStudentList(){
+		$query = "SELECT id,first_name,last_name FROM student WHERE status='ACTIVE'";
         
         $res = $this->inst->execute_query($query, $this->con);
         if(!$res){
             echo $this->con->error;
         }else{
-            $rec = $res->fetch_object();
-            echo "<pre>";
-            print_r($rec);
-            if($pass === $rec->password){
-                echo "login";
-            }else{
-                echo "error";
-            }
+			return $res;
         }
-        
-    }
+	}
 }

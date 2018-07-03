@@ -38,5 +38,14 @@ final class Database {
         $res = $con->query($query);
         return $res;
     }
+	
+	public function execute_query_with_last_id($query,$con){
+        $con->query($query);
+		return $con->insert_id;
+    }
+	
+	public function escape_unwanted_string($val,$con){
+        return mysqli_real_escape_string($con,strip_tags($val));
+    }
 
 }
