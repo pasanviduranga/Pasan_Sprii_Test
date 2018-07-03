@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <connection>
 	<host>localhost</host>
-	<user>root</user>
-	<password></password>
-	<dbname>pasan_sprii_test</dbname>
+	<user>pasan</user>
+	<pass>pasan</pass>
+	<dbname>pasan</dbname>
 </connection>
